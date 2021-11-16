@@ -8,6 +8,6 @@ Solve the exercises in order:
 1. simplegui ✔
 2. iogui ✔
 3. mvcio ✔
-4. mvcio2
+4. mvcio2 ✔
 5. mvc
 6. advanced

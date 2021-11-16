@@ -1,5 +1,23 @@
 package it.unibo.oop.lab.mvcio2;
 
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
+
+import javax.swing.JButton;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+
+import it.unibo.oop.lab.mvcio.Controller;
+import it.unibo.oop.lab.mvcio.SimpleGUI;
+
 /**
  * A very simple program using a graphical interface.
  * 
@@ -31,5 +49,96 @@ public final class SimpleGUIWithFileChooser {
      * update the UI: in this example the UI knows when should be updated, so
      * try to keep things separated.
      */
+    
+    private final static String TITLE = "MVCIO2";
+    
+    private final JFrame frame = new JFrame(TITLE);
+    private final Controller controller;
+
+    public SimpleGUIWithFileChooser(final Controller controller) {
+        this.controller = controller;
+
+        final Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
+        final int sw = (int) screen.getWidth();
+        final int sh = (int) screen.getHeight();
+        frame.setSize(sw / 2, sh / 2);
+        
+        JPanel panel = new JPanel();
+        panel.setLayout(new BorderLayout());
+        
+        final JTextArea text = new JTextArea();
+        final JButton write = new JButton("Save");
+        
+        JPanel commandsPanel = new JPanel();
+        commandsPanel.setLayout(new BorderLayout());
+        
+        JTextField currentFile = new JTextField();
+        currentFile.setEditable(false);
+        
+        JButton browse = new JButton("Browse");
+        
+        commandsPanel.add(currentFile, BorderLayout.CENTER);
+        commandsPanel.add(browse, BorderLayout.LINE_END);
+        
+        panel.add(commandsPanel, BorderLayout.NORTH);
+        panel.add(text);
+        panel.add(write, BorderLayout.SOUTH);
+        
+        frame.setContentPane(panel);
+        
+        write.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    controller.printString(text.getText());
+                } catch (IOException e1) {
+                    JOptionPane.showMessageDialog(frame, e1, "Error", JOptionPane.ERROR_MESSAGE);
+                    e1.printStackTrace();
+                }
+            }
+            
+        });
+        
+        browse.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JFileChooser chooser = new JFileChooser();
+                int value = chooser.showSaveDialog(browse);
+                
+                switch(value) {
+                case JFileChooser.APPROVE_OPTION: 
+                    controller.setFile(chooser.getSelectedFile());
+                    currentFile.setText(controller.getFile().getName());
+                    break;
+                
+                case JFileChooser.CANCEL_OPTION: 
+                    break;
+              
+                default: 
+                    JOptionPane.showMessageDialog(browse, "Error while selecting the file");
+                      
+                }
+            }
+            
+        });
+        /*
+         * Instead of appearing at (0,0), upper left corner of the screen, this
+         * flag makes the OS window manager take care of the default positioning
+         * on screen. Results may vary, but it is generally the best choice.
+         */
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setLocationByPlatform(true);
+    }
+    
+    private void display() {
+        frame.setVisible(true);
+    }
+    
+    public static void main(final String... args) {
+        new SimpleGUIWithFileChooser(new Controller()).display();
+     }
+
 
 }

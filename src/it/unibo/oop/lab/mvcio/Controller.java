@@ -57,7 +57,7 @@ public class Controller {
         return this.file.getPath();
     }
     
-    void printString(final String s) throws IOException {
+    public void printString(final String s) throws IOException {
         PrintStream ps = new PrintStream(this.file);
         ps.print(s);
     }
