@@ -21,4 +21,10 @@ public interface DrawNumberViewObserver {
      * Gracefully quits from the application.
      */
     void quit();
+    
+    /**
+     * Loads min, max and attempts number from a config file
+     */
+    void loadConfiguration();
+
 }
